@@ -1,11 +1,11 @@
-let modelo = null;
-let results = ["Camiseta/Top", "Pantalón", "Buso", "Vestido", "Chaqueta", "Sandalia", "Camisa", "Zapatilla", "Bolso", "Botín"];
+var modelo = null;
+var results = ["Camiseta/Top", "Pantalón", "Buso", "Vestido", "Chaqueta", "Sandalia", "Camisa", "Zapatilla", "Bolso", "Botín"];
 
 //Tomar y configurar el canvas
-let canvas = document.getElementById("bigcanvas");
-let ctx1 = canvas.getContext("2d");
-let smallcanvas = document.getElementById("smallcanvas");
-let ctx2 = smallcanvas.getContext("2d");
+var canvas = document.getElementById("bigcanvas");
+var ctx1 = canvas.getContext("2d");
+var smallcanvas = document.getElementById("smallcanvas");
+var ctx2 = smallcanvas.getContext("2d");
 
 function limpiar() {
   ctx1.clearRect(0, 0, canvas.width, canvas.height);

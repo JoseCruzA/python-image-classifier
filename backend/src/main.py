@@ -140,14 +140,3 @@ print("Prediccion: " + nombres_clases[np.argmax(prediccion[0])] )
 
 #Exportacion del modelo a h5
 modelo.save('modelo_exportado.h5')
-
-
-
-
-
-
-
-
-
-
-

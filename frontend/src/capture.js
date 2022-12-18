@@ -1,14 +1,14 @@
 //Tomar y configurar el canvasC
-let canvasC = document.getElementById("canvas");
-let video = document.getElementById("video");
-let othercanvas = document.getElementById("othercanvas");
-let ctx = canvasC.getContext("2d");
-let otherCtx = othercanvas.getContext("2d");
-let size = 200;
-let camaras = [];
+var canvasC = document.getElementById("canvas");
+var video = document.getElementById("video");
+var othercanvas = document.getElementById("othercanvas");
+var ctx = canvasC.getContext("2d");
+var otherCtx = othercanvas.getContext("2d");
+var size = 200;
+var camaras = [];
 
-let currentStream = null;
-let facingMode = "user"; //Para que funcione con el celular (user/environment)
+var currentStream = null;
+var facingMode = "user"; //Para que funcione con el celular (user/environment)
 
 function mostrarCamara() {
   var opciones = {
@@ -78,11 +78,16 @@ function predecirC() {
     var imgData = otherCtx.getImageData(0, 0, 28, 28);
     var arr = []; //El arreglo completo
     var arr28 = []; //Al llegar a arr150 posiciones se pone en 'arr' como un nuevo indice
+    var valor = null;
     for (var p = 0, i = 0; p < imgData.data.length; p += 4) {
-      var red = imgData.data[p] / 255;
-      var green = imgData.data[p + 1] / 255;
-      var blue = imgData.data[p + 2] / 255;
-      arr28.push([red, green, blue]); //Agregar al arr150 y normalizar a 0-1. Aparte queda dentro de un arreglo en el indice 0... again
+      var light = parseInt(
+        (imgData.data[p] + imgData.data[p + 1] + imgData.data[p + 2]) / 3
+      );
+      imgData.data[p] = light;
+      imgData.data[p + 1] = light;
+      imgData.data[p + 2] = light;
+      valor = light / 255; //Normalizar a 0-1
+      arr28.push([valor]); //Agregar al arr150 y normalizar a 0-1. Aparte queda dentro de un arreglo en el indice 0... again
       if (arr28.length == 28) {
         arr.push(arr28);
         arr28 = [];
@@ -96,15 +101,13 @@ function predecirC() {
     var mayorIndice = resultados.indexOf(Math.max.apply(null, resultados));
 
     console.log("Prediccion", results[mayorIndice]);
-    document.getElementById("resultado").innerHTML = results[mayorIndice];
+    document.getElementById("resultadoC").innerHTML = results[mayorIndice];
   }
 
   setTimeout(predecir, 150);
 }
 
 function procesarCamara() {
-  var ctx = canvasC.getContext("2d");
-
   ctx.drawImage(video, 0, 0, size, size, 0, 0, size, size);
 
   setTimeout(procesarCamara, 20);
@@ -130,10 +133,8 @@ function resample_singleC(canvasC, width, height, resize_canvasC) {
   var ratio_w_half = Math.ceil(ratio_w / 2);
   var ratio_h_half = Math.ceil(ratio_h / 2);
 
-  var ctx = canvasC.getContext("2d");
-  var ctx2 = resize_canvasC.getContext("2d");
   var img = ctx.getImageData(0, 0, width_source, height_source);
-  var img2 = ctx2.createImageData(width, height);
+  var img2 = otherCtx.createImageData(width, height);
   var data = img.data;
   var data2 = img2.data;
 
@@ -198,5 +199,5 @@ function resample_singleC(canvasC, width, height, resize_canvasC) {
     data2[p + 2] = gris;
   }
 
-  ctx2.putImageData(img2, 0, 0);
+  otherCtx.putImageData(img2, 0, 0);
 }
