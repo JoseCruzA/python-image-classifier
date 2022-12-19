@@ -94,8 +94,7 @@ function predecirC() {
       }
     }
 
-    arr = [arr]; //Meter el arreglo en otro arreglo por que si no tio tensorflow se enoja >:(
-    //Nah basicamente Debe estar en un arreglo nuevo en el indice 0, por ser un tensor4d en forma 1, 28, 28, 1
+    arr = [arr];
     var tensor4 = tf.tensor4d(arr);
     var resultados = modelo.predict(tensor4).dataSync();
     var mayorIndice = resultados.indexOf(Math.max.apply(null, resultados));
@@ -103,8 +102,6 @@ function predecirC() {
     console.log("Prediccion", results[mayorIndice]);
     document.getElementById("resultadoC").innerHTML = results[mayorIndice];
   }
-
-  setTimeout(predecir, 150);
 }
 
 function procesarCamara() {
@@ -113,15 +110,6 @@ function procesarCamara() {
   setTimeout(procesarCamara, 20);
 }
 
-/**
- * Hermite resize - fast image resize/resample using Hermite filter. 1 cpu version!
- *
- * @param {HtmlElement} canvasC
- * @param {int} width
- * @param {int} height
- * @param {boolean} resize_canvasC if true, canvasC will be resized. Optional.
- * Cambiado por RT, resize canvasC ahora es donde se pone el chiqitillllllo
- */
 function resample_singleC(canvasC, width, height, resize_canvasC) {
   var width_source = canvasC.width;
   var height_source = canvasC.height;
@@ -191,7 +179,7 @@ function resample_singleC(canvasC, width, height, resize_canvasC) {
     if (gris < 100) {
       gris = 0; //exagerarlo
     } else {
-      gris = 255; //al infinito
+      gris = 255;
     }
 
     data2[p] = gris;

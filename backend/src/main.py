@@ -70,7 +70,6 @@ modelo.compile(
 datos_entrenamiento = datos_entrenamiento.repeat().shuffle(num_ej_entrenamiento).batch(TAMAÑO_LOTE)
 datos_pruebas = datos_pruebas.batch(TAMAÑO_LOTE)
 
-
 #Entrenamiento
 historial = modelo.fit(datos_entrenamiento, epochs = 5, steps_per_epoch = math.ceil(num_ej_entrenamiento/TAMAÑO_LOTE))
 

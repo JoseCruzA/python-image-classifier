@@ -1,45 +1,65 @@
-var modelo = null;
-var results = ["Camiseta/Top", "Pantalón", "Buso", "Vestido", "Chaqueta", "Sandalia", "Camisa", "Zapatilla", "Bolso", "Botín"];
+//Tomar y configurar el canvasB
+var canvasB = document.getElementById("bigcanvasB");
+var image = document.getElementById("image");
+var othercanvasB = document.getElementById("smallcanvasB");
+var ctxB = canvasB.getContext("2d");
+var otherctxB = othercanvasB.getContext("2d");
+var size = 200;
 
-//Tomar y configurar el canvas
-var canvas = document.getElementById("bigcanvas");
-var ctx1 = canvas.getContext("2d");
-var smallcanvas = document.getElementById("smallcanvas");
-var ctx2 = smallcanvas.getContext("2d");
-
-function limpiar() {
-  ctx1.clearRect(0, 0, canvas.width, canvas.height);
-  drawingcanvas.clear();
+function uploadImage() {
+    image.click();
 }
 
-function predecir() {
-  //Pasar canvas a version 28x28
-  resample_single(canvas, 28, 28, smallcanvas);
+function showPreview() {
+    var file = image.files[0];
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        var img = new Image();
+        img.src = e.target.result;
+        img.onload = function () {
+            ctxB.drawImage(img, 0, 0, size, size);
+        };
+    };
+    reader.readAsDataURL(file);
+}
 
-  var imgData = ctx2.getImageData(0, 0, 28, 28);
-  var arr = []; //El arreglo completo
-  var arr28 = []; //Al llegar a 28 posiciones se pone en 'arr' como un nuevo indice
-  for (var p = 0, i = 0; p < imgData.data.length; p += 4) {
-    var valor = imgData.data[p + 3] / 255;
-    arr28.push([valor]); //Agregar al arr28 y normalizar a 0-1. Aparte queda dentro de un arreglo en el indice 0... again
-    if (arr28.length == 28) {
-      arr.push(arr28);
-      arr28 = [];
+function predecirB() {
+  if (modelo != null) {
+    //Pasar canvasB a version 28x28
+    resample_singleB(canvasB, 28, 28, othercanvasB);
+
+    var imgData = otherctxB.getImageData(0, 0, 28, 28);
+    var arr = []; //El arreglo completo
+    var arr28 = []; //Al llegar a arr150 posiciones se pone en 'arr' como un nuevo indice
+    var valor = null;
+    for (var p = 0, i = 0; p < imgData.data.length; p += 4) {
+      var light = parseInt(
+        (imgData.data[p] + imgData.data[p + 1] + imgData.data[p + 2]) / 3
+      );
+      imgData.data[p] = light;
+      imgData.data[p + 1] = light;
+      imgData.data[p + 2] = light;
+      valor = light / 255; //Normalizar a 0-1
+      arr28.push([valor]); //Agregar al arr150 y normalizar a 0-1. Aparte queda dentro de un arreglo en el indice 0... again
+      if (arr28.length == 28) {
+        arr.push(arr28);
+        arr28 = [];
+      }
     }
+
+    arr = [arr];
+    var tensor4 = tf.tensor4d(arr);
+    var resultados = modelo.predict(tensor4).dataSync();
+    var mayorIndice = resultados.indexOf(Math.max.apply(null, resultados));
+
+    console.log("Prediccion", results[mayorIndice]);
+    document.getElementById("resultadoB").innerHTML = results[mayorIndice];
   }
-
-  arr = [arr];
-  var tensor4 = tf.tensor4d(arr);
-  var resultados = modelo.predict(tensor4).dataSync();
-  var mayorIndice = resultados.indexOf(Math.max.apply(null, resultados));
-
-  console.log("Prediccion", results[mayorIndice]);
-  document.getElementById("resultado").innerHTML = results[mayorIndice];
 }
 
-function resample_single(canvas, width, height, resize_canvas) {
-  var width_source = canvas.width;
-  var height_source = canvas.height;
+function resample_singleB(canvasB, width, height, resize_canvasB) {
+  var width_source = canvasB.width;
+  var height_source = canvasB.height;
   width = Math.round(width);
   height = Math.round(height);
 
@@ -48,10 +68,8 @@ function resample_single(canvas, width, height, resize_canvas) {
   var ratio_w_half = Math.ceil(ratio_w / 2);
   var ratio_h_half = Math.ceil(ratio_h / 2);
 
-  var ctx = canvas.getContext("2d");
-  var ctx2 = resize_canvas.getContext("2d");
-  var img = ctx.getImageData(0, 0, width_source, height_source);
-  var img2 = ctx2.createImageData(width, height);
+  var img = ctxB.getImageData(0, 0, width_source, height_source);
+  var img2 = otherctxB.createImageData(width, height);
   var data = img.data;
   var data2 = img2.data;
 
@@ -102,8 +120,6 @@ function resample_single(canvas, width, height, resize_canvas) {
     }
   }
 
-  //Ya que esta, exagerarlo. Blancos blancos y negros negros..?
-
   for (var p = 0; p < data2.length; p += 4) {
     var gris = data2[p]; //Esta en blanco y negro
 
@@ -118,12 +134,5 @@ function resample_single(canvas, width, height, resize_canvas) {
     data2[p + 2] = gris;
   }
 
-  ctx2.putImageData(img2, 0, 0);
+  otherctxB.putImageData(img2, 0, 0);
 }
-
-//Cargar modelo
-(async () => {
-  console.log("Cargando modelo...");
-  modelo = await tf.loadLayersModel("../resources/model.json");
-  console.log("Modelo cargado...");
-})();

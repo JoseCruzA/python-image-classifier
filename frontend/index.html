@@ -33,11 +33,11 @@
                     type="button" role="tab" aria-controls="home-tab-pane"
                     aria-selected="true">Dibuja</button>
             </li>
-            <li class="nav-item" role="presentation">
+            <!--<li class="nav-item" role="presentation">
                 <button class="nav-link" id="profile-tab" data-bs-toggle="tab"
                     data-bs-target="#profile-tab-pane" type="button" role="tab"
                     aria-controls="profile-tab-pane" aria-selected="false">Carga</button>
-            </li>
+            </li>-->
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="contact-tab" data-bs-toggle="tab"
                     data-bs-target="#contact-tab-pane" type="button" role="tab"
@@ -50,11 +50,11 @@
         <main>
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="home-tab-pane"
-                    role="tabpanel" aria-labelledby="home-tab" tabindex="0"><div
-                        class="container mt-5">
+                    role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+                    <div class="container mt-5">
                         <div class="row">
                             <div class="text-center">
-                                <div id="canvas-container">
+                                <div class="canvas-container">
                                     <div><i>Dibuja una prenda de ropa para
                                             clasificarla</i></div>
                                     <canvas id="bigcanvas" width="200"
@@ -74,14 +74,42 @@
 
                             </div>
                         </div>
-                    </div></div>
-                <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel"
-                    aria-labelledby="profile-tab" tabindex="0">...</div>
+                    </div>
+                </div>
+                <!-- <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel"
+                    aria-labelledby="profile-tab" tabindex="0">
+                    <div class="container mt-5">
+                        <div class="row">
+                            <div class="text-center">
+                                <div class="canvas-container">
+                                    <div><i>Sube la imagén de una prenda para calsificarla</i></div>
+                                    <input type="file" name="image" id="image" accept="image/*" onchange="showPreview()" style="display: none;">
+                                    <canvas id="bigcanvasB" width="200"
+                                        height="200" onclick="uploadImage()"></canvas>
+                                    <canvas id="smallcanvasB" width="28"
+                                        height="28"
+                                        ></canvas>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <button class="btn btn-primary" id="limpiar"
+                                        onclick="limpiarB()">Limpiar</button>
+                                    <button class="btn btn-success"
+                                        id="predecirB"
+                                        onclick="predecirB()">Predecir</button>
+                                    <div id="resultadoB"></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
                 <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel"
-                    aria-labelledby="contact-tab" tabindex="0" onclick="mostrarCamara();">
+                    aria-labelledby="contact-tab" tabindex="0"
+                    onclick="mostrarCamara();">
                     <div class="px-4 py-2 my-2 text-center border-bottom">
                         <div class="col-lg-6 mx-auto">
-                            <p class="lead mb-0">Posicione una prenda de vestir frente a la cámara para clasificarla</p>
+                            <p class="lead mb-0">Posicione una prenda de vestir
+                                frente a la cámara para clasificarla</p>
                         </div>
                     </div>
 
@@ -96,6 +124,9 @@
                                 <button class="btn btn-primary mb-2"
                                     id="cambiar-camara"
                                     onclick="cambiarCamara();">Cambiar camara</button>
+                                <button class="btn btn-success"
+                                    id="cambiar-camara"
+                                    onclick="predecirC();">Predecir</button>
                                 <canvas id="canvas" width="200" height="200"></canvas>
                                 <canvas id="othercanvas" width="28"
                                     height="28" style="display: none;"></canvas>
@@ -113,5 +144,6 @@
             src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
         <script type="text/javascript" src="./src/draw.js"></script>
         <script type="text/javascript" src="./src/capture.js"></script>
+        <!--<script type="text/javascript" src="./src/upload.js"></script>-->
     </body>
 </html>
